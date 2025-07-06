@@ -1,10 +1,15 @@
--- Smart Meat Bandage - Configuration Module
--- 설정 처리를 메인 로직과 분리하여 관리
 local SMB_Config = {}
+
+-- ⚠️  VERSION update guide  ⚠️
+-- 1. Check <version> value in metadata.xml
+-- 2. Update VERSION below to match
+-- 3. Keep both files at the same version!
 
 local VERSION = "1.0"
 
--- 기본값 정의
+SMB_Config.VERSION = VERSION
+
+-- default config
 local DefaultConfig = {
     enabled = true,
     detectionRadius = 400,
@@ -18,7 +23,6 @@ local DefaultConfig = {
     debugOffsetY = 40,
 }
 
--- JSON (Repentance 내장 json 사용, 없으면 더미)
 local json = nil
 pcall(function() json = require("json") end)
 if not json then
@@ -29,7 +33,7 @@ if not json then
 end
 
 --------------------------------------------------
--- 초기화: 모드 객체에 Config 테이블 생성
+-- initialize: create Config table in mod object
 --------------------------------------------------
 function SMB_Config.Init(mod)
     mod.Config = mod.Config or {}
@@ -43,7 +47,7 @@ function SMB_Config.Init(mod)
 end
 
 --------------------------------------------------
--- 저장된 설정 불러오기
+-- load saved config
 --------------------------------------------------
 function SMB_Config.Load(mod)
     if mod:HasData() then
@@ -61,14 +65,14 @@ function SMB_Config.Load(mod)
 end
 
 --------------------------------------------------
--- 설정 저장
+-- save config
 --------------------------------------------------
 function SMB_Config.Save(mod)
     Isaac.SaveModData(mod, json.encode(mod.Config))
 end
 
 --------------------------------------------------
--- 리셋: 기본값으로 되돌리고 저장
+-- reset: restore to default values and save
 --------------------------------------------------
 function SMB_Config.Reset(mod)
     for k, v in pairs(DefaultConfig) do

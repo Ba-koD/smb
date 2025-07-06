@@ -1,12 +1,13 @@
 -- Smart Meat Bandage - Mod Config Menu Module
 local SMB_MCM = {}
 
-local ConfigModule = include("smb_config")
+-- include config
+local SMB_Config = include("smb_config")
 
 function SMB_MCM.Setup(mod)
     if not ModConfigMenu then return end
 
-    local category = "Smart Meat Bandage"
+    local category = "SMB v" .. SMB_Config.VERSION
     ModConfigMenu.RemoveCategory(category)
 
     -- General Settings
@@ -50,7 +51,7 @@ function SMB_MCM.Setup(mod)
         Display = function() return "Reset To Defaults" end,
         OnChange = function(b)
             if b then
-                ConfigModule.Reset(mod)
+                SMB_Config.Reset(mod)
                 return false
             end
         end,

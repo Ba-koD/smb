@@ -1,8 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-	<name>Smart Meat &amp; Bandage</name>
-	<directory>smartmeatbandage</directory>
-	<description>Meat Boy / Bandage Girl 패밀리어가 서로 다른 적을 추적하고 인식 범위를 확대합니다.</description>
-	<version>1.0</version>
-	<visibility/>
-</metadata>
+    <name>Smart Meat &amp; Bandage</name>
+    <directory>smart meat bandage</directory>
+    <id>3518531081</id>
+    <description>Cube of Meat와 Ball of Bandages가 더 똑똑하게 행동하도록 만드는 모드입니다.
 
+주요 기능:
+- 스마트 타겟팅: 패밀리어가 가장 가까운 적을 자동으로 타겟팅
+- 무적 상태 적 제외: 무적인 보스나 적들을 타겟하지 않음
+- 균등 분배: 여러 패밀리어가 있을 때 적들을 골고루 분배
+- 비행 지원: 플레이어가 비행할 수 있을 때 장애물 무시
+- 감지 거리 설정: 타겟 감지 거리를 조정 가능
+
+Mod Config Menu 호환
+
+
+A mod that makes Cube of Meat and Ball of Bandages behave more intelligently.
+
+Key Features:
+- Smart Targeting: Familiars automatically target the nearest enemy
+- Invincible Enemy Exclusion: Won't target invincible bosses or enemies
+- Even Distribution: Distributes targets evenly among multiple familiars
+- Flight Assist: Ignores obstacles when player can fly
+- Detection Range: Adjustable target detection distance
+
+Compatible with Mod Config Menu</description>
+    <version>1.1</version>
+    <visibility>Public</visibility>
+    <tag id="Lua"/>
+    <tag id="Familiars"/>
+    <tag id="Quality of Life"/>
+</metadata>

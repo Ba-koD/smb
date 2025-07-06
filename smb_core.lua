@@ -1,10 +1,13 @@
 -- Smart Meat Bandage - Core Logic (smb_core.lua)
-SmartMB = SmartMB or RegisterMod("Smart Meat Bandage", 1)
-local game = Game()
-
 -- include config & MCM modules
 local SMB_Config = include("smb_config")
 local SMB_MCM   = include("smb_mcm")
+
+SmartMB = SmartMB or RegisterMod("Smart Meat & Bandage", 1)
+local game = Game()
+
+-- Log version info
+Isaac.ConsoleOutput("Smart Meat & Bandage v" .. SMB_Config.VERSION .. " initializing...\n")
 
 --------------------------------------------------
 -- Familiar Variants we control
@@ -35,7 +38,7 @@ local function getAliveEnemies()
     local list = {}
     for _, ent in ipairs(entities) do
         if ent:IsActiveEnemy(false) and not ent:IsDead() then
-            -- 무적 상태인 엔티티는 제외
+            -- invincible entities are excluded
             if not ent:IsInvincible() then
                 table.insert(list, ent)
             end
@@ -54,7 +57,7 @@ function SmartMB:AssignNewTarget(fam)
         return
     end
 
-    -- 현재 패밀리어 배정 현황 파악 (간단히)
+    -- check current familiar assignment status (simply)
     local counts = {}
     local allFams = Isaac.FindInRadius(Vector(0,0), 100000, EntityPartition.FAMILIAR)
     for _, fe in ipairs(allFams) do
@@ -64,14 +67,14 @@ function SmartMB:AssignNewTarget(fam)
         end
     end
 
-    -- 최소 배정 수 찾기
+    -- find minimum assignment count
     local minCount = math.huge
     for _, enemy in ipairs(enemies) do
         local c = counts[enemy.InitSeed] or 0
         if c < minCount then minCount = c end
     end
 
-    -- 그중에서 가장 가까운 적 선택
+    -- select the nearest enemy among the minimum assignment count
     local nearest = nil
     local minDist = math.huge
     for _, enemy in ipairs(enemies) do
@@ -101,7 +104,7 @@ end
 -- Callback: Familiar update
 --------------------------------------------------
 function SmartMB:FamiliarUpdate(fam)
-    -- 아직 Config 가 초기화되지 않았을 수 있으므로 안전 검사
+    -- check if Config is initialized (safety check)
     if not SmartMB.Config or not SmartMB.Config.enabled then return end
 
     -- flight assist: ignore pits/spikes if player can fly
@@ -116,27 +119,27 @@ function SmartMB:FamiliarUpdate(fam)
             if fam.GridCollisionClass ~= EntityGridCollisionClass.GRIDCOLL_NONE then
                 fam.GridCollisionClass = EntityGridCollisionClass.GRIDCOLL_NONE
             end
-            -- 부유 플래그 부여 (FLAG_FLYING 상수가 있는 경우에만)
+            -- add floating flag (if EntityFlag.FLAG_FLYING exists)
             if EntityFlag and EntityFlag.FLAG_FLYING then
                 if not fam:HasEntityFlags(EntityFlag.FLAG_FLYING) then
                     fam:AddEntityFlags(EntityFlag.FLAG_FLYING)
                 end
             end
 
-            -- 목표 방향으로 직접 위치 추적 (벽/패스파인더 무시)
+            -- track target directly (ignore walls/passers)
             if fam.Target then
                 local dir = fam.Target.Position - fam.Position
                 if dir:Length() > 0 then
-                    fam.Velocity = dir:Resized(12) -- 강제 속도
+                    fam.Velocity = dir:Resized(12) -- force velocity
                 end
-                -- 매우 가까우면 스Nap to target
+                -- very close? snap to target
                 if dir:Length() < 5 then
                     fam.Position = fam.Target.Position + Vector(0,1)
                     fam.Velocity = Vector.Zero
                 end
             end
         else
-            -- 원래 충돌/플래그 복원
+            -- restore original collision/flag
             local orig = fam:GetData().origGridColl
             if orig and fam.GridCollisionClass ~= orig then
                 fam.GridCollisionClass = orig
@@ -175,10 +178,13 @@ function SmartMB:OnGameStart(isSave)
     SMB_Config.Init(SmartMB)
     SMB_Config.Load(SmartMB)
     SMB_MCM.Setup(SmartMB)
+    
+    Isaac.ConsoleOutput("Smart Meat & Bandage v" .. SMB_Config.VERSION .. " loaded successfully!\n")
 end
 
 function SmartMB:OnGameExit()
     SMB_Config.Save(SmartMB)
+    Isaac.ConsoleOutput("Smart Meat & Bandage v" .. SMB_Config.VERSION .. " settings saved.\n")
 end
 
 SmartMB:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, SmartMB.OnGameStart)
