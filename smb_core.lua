@@ -35,7 +35,10 @@ local function getAliveEnemies()
     local list = {}
     for _, ent in ipairs(entities) do
         if ent:IsActiveEnemy(false) and not ent:IsDead() then
-            table.insert(list, ent)
+            -- 무적 상태인 엔티티는 제외
+            if not ent:IsInvincible() then
+                table.insert(list, ent)
+            end
         end
     end
     return list
