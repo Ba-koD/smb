@@ -5,7 +5,7 @@ local SMB_Config = {}
 -- 2. Update VERSION below to match
 -- 3. Keep both files at the same version!
 
-local VERSION = "1.0"
+local VERSION = "1.1"
 
 SMB_Config.VERSION = VERSION
 

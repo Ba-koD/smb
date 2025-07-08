@@ -1,5 +1,9 @@
 -- Smart Meat Bandage - Render Module (smb_render.lua)
-local SMB_Render = {}
+local SMB_Render = {
+    famIdMap   = {},   -- [familiarSeed] = id (fixed)
+    nextFamId  = 1,
+    tgtFirstId = {},   -- [targetSeed]   = id (initial id of familiar that first targets this target)
+}
 
 local game = Game()
 
@@ -97,33 +101,73 @@ function SMB_Render:PostRender()
     -- ===== Familiar-Target Link Numbers =====
     if mod.Config.showLinkNumbers then
         if game:IsPaused() or (ModConfigMenu and ModConfigMenu.IsVisible) then return end
+        local idByFam   = SMB_Render.famIdMap
+        local nextId    = SMB_Render.nextFamId
+        local tgtFirst  = SMB_Render.tgtFirstId  -- [targetSeed] = initial id of familiar that first targets this target
+        local aliveTgt  = {}                      -- targets alive this frame
 
-        local famPairs = {}
-        local tgtIdMap = {}
-        local nextId = 1
+        --------------------------------------------------
+        -- assign fixed id to each familiar + record initial id for each target
+        --------------------------------------------------
         for _, ent in ipairs(fams) do
             local fam = ent:ToFamiliar()
             if fam and SmartMB.ControlledVariants then
                 for _, v in ipairs(SmartMB.ControlledVariants) do
                     if fam.Variant == v then
+                        local fSeed = fam.InitSeed
+                        if not idByFam[fSeed] then      -- first time seen familiar
+                            idByFam[fSeed] = nextId
+                            nextId = nextId + 1
+                        end
+                        local id = idByFam[fSeed]
+
+                        -- target processing
                         local tgt = fam.Target
                         if tgt and tgt:Exists() and not tgt:IsDead() then
-                            local key = tgt.InitSeed
-                            if not tgtIdMap[key] then
-                                tgtIdMap[key] = nextId
-                                nextId = nextId + 1
+                            local tSeed = tgt.InitSeed
+                            aliveTgt[tSeed] = tgt
+                            if not tgtFirst[tSeed] then
+                                tgtFirst[tSeed] = id
                             end
-                            local id = tgtIdMap[key]
-                            table.insert(famPairs,{fam=fam,tgt=tgt,id=id})
                         end
                     end
                 end
             end
         end
+        SMB_Render.nextFamId = nextId   -- use for next frame
 
-        for _, pair in ipairs(famPairs) do
-            renderWorldNumber(pair.id, pair.fam.Position)
-            renderWorldNumber(pair.id, pair.tgt.Position)
+        --------------------------------------------------
+        -- clean up dead/no longer targeted monsters
+        --------------------------------------------------
+        for tSeed, _ in pairs(tgtFirst) do
+            if not aliveTgt[tSeed] then
+                tgtFirst[tSeed] = nil
+            end
+        end
+
+        --------------------------------------------------
+        -- actual output: familiars always / monsters only once
+        --------------------------------------------------
+        for _, ent in ipairs(fams) do
+            local fam = ent:ToFamiliar()
+            if fam and SmartMB.ControlledVariants then
+                for _, v in ipairs(SmartMB.ControlledVariants) do
+                    if fam.Variant == v then
+                        local id = idByFam[fam.InitSeed]
+                        renderWorldNumber(id, fam.Position)
+
+                        local tgt = fam.Target
+                        if tgt and tgt:Exists() and not tgt:IsDead() then
+                            local tSeed = tgt.InitSeed
+                            local showId = tgtFirst[tSeed]
+                            if showId then          -- 최초 id 한 번만 출력
+                                renderWorldNumber(showId, tgt.Position)
+                                tgtFirst[tSeed] = false  -- 출력 플래그 끔(중복 방지)
+                            end
+                        end
+                    end
+                end
+            end
         end
     end
 end
