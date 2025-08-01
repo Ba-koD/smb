@@ -49,6 +49,21 @@ function SMB_Render:PostRender()
         renderLine("Enabled: " .. tostring(mod.Config.enabled), x, y); y = y + lineH
         renderLine("FlightAssist: " .. tostring(mod.Config.flightAssist), x, y); y = y + lineH
         renderLine("DetectionRadius: " .. tostring(mod.Config.detectionRadius), x, y); y = y + lineH
+        -- Count Meat Boy and Bandage Girl familiars
+        local mbCount = 0
+        local bgCount = 0
+        for _, ent in ipairs(fams) do
+            local fam = ent:ToFamiliar()
+            if fam then
+                if fam.Variant == FamiliarVariant.CUBE_OF_MEAT_3 or fam.Variant == FamiliarVariant.CUBE_OF_MEAT_4 then
+                    mbCount = mbCount + 1
+                elseif fam.Variant == FamiliarVariant.BALL_OF_BANDAGES_3 or fam.Variant == FamiliarVariant.BALL_OF_BANDAGES_4 then
+                    bgCount = bgCount + 1
+                end
+            end
+        end
+        renderLine("Meat Boy: " .. mbCount, x, y); y = y + lineH
+        renderLine("Bandage Girl: " .. bgCount, x, y); y = y + lineH
 
         local players = Isaac.FindByType(EntityType.ENTITY_PLAYER)
         local playerEnt = players[1] and players[1]:ToPlayer() or nil
@@ -57,17 +72,6 @@ function SMB_Render:PostRender()
              canFlyStr = tostring(playerEnt.CanFly)
         end
         renderLine("PlayerCanFly: " .. canFlyStr, x, y, 150,150,255); y = y + lineH
-
-        -- Count familiars in room
-        local famCount = 0
-        local activeCount = 0
-        for _, ent in ipairs(fams) do
-            if ent:ToFamiliar() then
-                famCount = famCount + 1
-                if ent.Target then activeCount = activeCount + 1 end
-            end
-        end
-        renderLine("Familiars: " .. famCount .. " (active " .. activeCount .. ")", x, y); y = y + lineH
 
         renderLine("Frame: " .. game:GetFrameCount(), x, y, 150,150,255); y = y + lineH
     end
@@ -160,9 +164,9 @@ function SMB_Render:PostRender()
                         if tgt and tgt:Exists() and not tgt:IsDead() then
                             local tSeed = tgt.InitSeed
                             local showId = tgtFirst[tSeed]
-                            if showId then          -- 최초 id 한 번만 출력
+                            if showId then          -- print initial id only once
                                 renderWorldNumber(showId, tgt.Position)
-                                tgtFirst[tSeed] = false  -- 출력 플래그 끔(중복 방지)
+                                tgtFirst[tSeed] = false  -- print flag off (avoid duplicate)
                             end
                         end
                     end
@@ -173,6 +177,18 @@ function SMB_Render:PostRender()
 end
 
 -- Register to PostRender callback
-SmartMB:AddCallback(ModCallbacks.MC_POST_RENDER, function() SMB_Render:PostRender() end) 
+SmartMB:AddCallback(ModCallbacks.MC_POST_RENDER, function() SMB_Render:PostRender() end)
+-- reset famIdMap, nextFamId, tgtFirstId
+SmartMB:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
+    SMB_Render.famIdMap = {}
+    SMB_Render.nextFamId = 1
+    SMB_Render.tgtFirstId = {}
+end)
+-- When room changes, reset famIdMap, nextFamId, tgtFirstId
+SmartMB:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function()
+    SMB_Render.famIdMap = {}
+    SMB_Render.nextFamId = 1
+    SMB_Render.tgtFirstId = {}
+end)
 
 return SMB_Render 
