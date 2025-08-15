@@ -48,7 +48,7 @@ function SMB_Render:PostRender()
         renderLine("=== SMB Debug ===", x, y, 255, 255, 0); y = y + lineH
         renderLine("Enabled: " .. tostring(mod.Config.enabled), x, y); y = y + lineH
         renderLine("FlightAssist: " .. tostring(mod.Config.flightAssist), x, y); y = y + lineH
-        renderLine("DetectionRadius: " .. tostring(mod.Config.detectionRadius), x, y); y = y + lineH
+        renderLine("DetectionRadius: " .. tostring(mod.Config.detectionRadius) .. " Grid", x, y); y = y + lineH
         -- Count Meat Boy and Bandage Girl familiars
         local mbCount = 0
         local bgCount = 0

@@ -12,7 +12,7 @@ SMB_Config.VERSION = VERSION
 -- default config
 local DefaultConfig = {
     enabled = true,
-    detectionRadius = 400,
+    detectionRadius = 10,
     flightAssist = true,
     -- debug
     showScreenDebug = false,

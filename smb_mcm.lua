@@ -27,11 +27,11 @@ function SMB_MCM.Setup(mod)
     ModConfigMenu.AddSetting(category, "General", {
         Type = ModConfigMenu.OptionType.NUMBER,
         CurrentSetting = function() return mod.Config.detectionRadius end,
-        Minimum = 100,
-        Maximum = 800,
-        Display = function() return "Detection Radius: " .. mod.Config.detectionRadius end,
+        Minimum = 1,
+        Maximum = 20,
+        Display = function() return "Detection Radius: " .. mod.Config.detectionRadius .. " Grid" end,
         OnChange = function(n) mod.Config.detectionRadius = n end,
-        Info = {"Set the detection radius for the Smart Meat Bandage mod."},
+        Info = {"Set the detection radius in Grid units (1 Grid = 40 pixels) for the Smart Meat Bandage mod."},
     })
 
     -- Flight Assist toggle

@@ -142,8 +142,19 @@ local function calculateNonBossAttackers(boss, totalFams, allNonBosses)
 end
 
 function SmartMB:AssignNewTarget(fam)
-    -- Only get enemies within the detection radius from the familiar
-    local enemies = getAliveEnemies(fam.Position, SmartMB.Config.detectionRadius)
+    -- Get player position for detection radius calculation
+    local player = game:GetNearestPlayer(fam.Position)
+    if fam.Player and type(fam.Player) ~= "boolean" then
+        local tmp = fam.Player:ToPlayer()
+        if tmp then player = tmp end
+    end
+    
+    if not player then return end
+    
+    -- Only get enemies within the detection radius from the player
+    local gridRadius = SmartMB.Config.detectionRadius
+    local pixelRadius = gridRadius * 40  -- 1 Grid = 40 pixels
+    local enemies = getAliveEnemies(player.Position, pixelRadius)
     if #enemies == 0 then
         fam.Target = nil
         return
@@ -264,8 +275,18 @@ function SmartMB:FamiliarUpdate(fam)
     end
 
     local target = fam.Target
-    -- reassign target only when individual familiar's target is invalid, unattackable, or too far
-    if (not target) or target:IsDead() or not target:Exists() or target:IsInvincible() or not target:IsVulnerableEnemy() or fam.Position:Distance(target.Position) > SmartMB.Config.detectionRadius then
+    -- reassign target only when individual familiar's target is invalid, unattackable, or too far from player
+    local player = game:GetNearestPlayer(fam.Position)
+    if fam.Player and type(fam.Player) ~= "boolean" then
+        local tmp = fam.Player:ToPlayer()
+        if tmp then player = tmp end
+    end
+    
+    if not player then return end
+    
+    local gridRadius = SmartMB.Config.detectionRadius
+    local pixelRadius = gridRadius * 40  -- 1 Grid = 40 pixels
+    if (not target) or target:IsDead() or not target:Exists() or target:IsInvincible() or not target:IsVulnerableEnemy() or player.Position:Distance(target.Position) > pixelRadius then
         self:AssignNewTarget(fam)
         target = fam.Target
     end
