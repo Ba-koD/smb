@@ -13,19 +13,65 @@ Isaac.ConsoleOutput("Smart Meat & Bandage v" .. SMB_Config.VERSION .. " initiali
 --------------------------------------------------
 -- Familiar Variants we control
 --------------------------------------------------
-local CONTROLLED_VARIANTS = {
-    FamiliarVariant.CUBE_OF_MEAT_3,
-    FamiliarVariant.CUBE_OF_MEAT_4,
-    FamiliarVariant.BALL_OF_BANDAGES_3,
-    FamiliarVariant.BALL_OF_BANDAGES_4,
+-- Familiar variant to config key mapping
+-- Format: [variant_id] = "configKey"
+local FAMILIAR_CONFIG_MAP = {
+    -- Meatboy (Cube of Meat Lv3=46, Lv4=47)
+    [46] = "famMeatboy",  -- CUBE_OF_MEAT_3
+    [47] = "famMeatboy",  -- CUBE_OF_MEAT_4
+    -- Bandage (Ball of Bandages Lv3=71, Lv4=72)
+    [71] = "famBandage",  -- BALL_OF_BANDAGES_3
+    [72] = "famBandage",  -- BALL_OF_BANDAGES_4
+    -- Additional Familiars (MCM categories)
+    [14] = "famDeadBird",      -- DEAD_BIRD
+    [15] = "famEvesBirdFoot",  -- EVES_BIRD_FOOT
+    [48] = "famIsaacsBody",    -- ISAACS_BODY
+    [50] = "famSmartFly",      -- SMART_FLY
+    [56] = "famLeech",         -- LEECH
+    [63] = "famLilHaunt",      -- LIL_HAUNT
+    [79] = "famGemini",        -- GEMINI
+    [118] = "famAngryFly",     -- ANGRY_FLY
+    [210] = "famBirdCage",     -- BIRD_CAGE
+    [218] = "famBotFly",       -- BOT_FLY
+    [224] = "famBabyPlum",     -- BABY_PLUM
+    [228] = "famMinisaac",     -- MINISAAC
+    [241] = "famBloodPuppy",   -- BLOOD_PUPPY
 }
 
-SmartMB.ControlledVariants = CONTROLLED_VARIANTS
+-- Banlist: Familiars that should NEVER be controlled (even with famAll)
+local FAMILIAR_BANLIST = {
+    [78] = true,   -- SCISSORS
+    [102] = true,  -- SUPER_BUM
+    [201] = true,  -- DIP
+    [225] = true,  -- FRUITY_PLUM
+    [233] = true,  -- WORM_FRIEND
+}
 
--- quick lookup
-local CONTROLLED_LOOKUP = {}
-for _, v in ipairs(CONTROLLED_VARIANTS) do
-    CONTROLLED_LOOKUP[v] = true
+--------------------------------------------------
+-- Helper: Check if familiar should be controlled
+--------------------------------------------------
+local function shouldControlFamiliar(fam)
+    if not SmartMB.Config or not SmartMB.Config.enabled then
+        return false
+    end
+    
+    -- Always skip banned familiars
+    if FAMILIAR_BANLIST[fam.Variant] then
+        return false
+    end
+    
+    -- famAll = true -> control ALL familiars (except banlist)
+    if SmartMB.Config.famAll then
+        return true
+    end
+    
+    -- Check individual settings via config map
+    local configKey = FAMILIAR_CONFIG_MAP[fam.Variant]
+    if configKey and SmartMB.Config[configKey] then
+        return true
+    end
+    
+    return false
 end
 
 -- round-robin index
@@ -83,7 +129,7 @@ local function findBestTarget(fam, targetList)
     local allFams = Isaac.FindInRadius(Vector(0,0), 100000, EntityPartition.FAMILIAR)
     for _, fe in ipairs(allFams) do
         local f2 = fe:ToFamiliar()
-        if f2 and CONTROLLED_LOOKUP[f2.Variant] and f2.Target and f2.Target:Exists() then
+        if f2 and shouldControlFamiliar(f2) and f2.Target and f2.Target:Exists() then
             local is_in_list = false
             for _, t in ipairs(targetList) do
                 if t.InitSeed == f2.Target.InitSeed then
@@ -165,7 +211,7 @@ function SmartMB:AssignNewTarget(fam)
     local allFams = Isaac.FindInRadius(Vector(0,0), 100000, EntityPartition.FAMILIAR)
     for _, fe in ipairs(allFams) do
         local f2 = fe:ToFamiliar()
-        if f2 and CONTROLLED_LOOKUP[f2.Variant] and f2.Target and f2.Target:Exists() then
+        if f2 and shouldControlFamiliar(f2) and f2.Target and f2.Target:Exists() then
             counts[f2.Target.InitSeed] = (counts[f2.Target.InitSeed] or 0) + 1
         end
     end
@@ -201,7 +247,7 @@ function SmartMB:ReassignAllTargets()
     local allFams = Isaac.FindInRadius(Vector(0,0), 100000, EntityPartition.FAMILIAR)
     for _, fe in ipairs(allFams) do
         local f2 = fe:ToFamiliar()
-        if f2 and CONTROLLED_LOOKUP[f2.Variant] then
+        if f2 and shouldControlFamiliar(f2) then
             self:AssignNewTarget(f2)
         end
     end
@@ -212,6 +258,9 @@ end
 -- Callback: Familiar init
 --------------------------------------------------
 function SmartMB:FamiliarInit(fam)
+    -- Check if this familiar should be controlled
+    if not shouldControlFamiliar(fam) then return end
+    
     -- store original collision class
     fam:GetData().origGridColl = fam.GridCollisionClass
     self:AssignNewTarget(fam)
@@ -221,8 +270,8 @@ end
 -- Callback: Familiar update
 --------------------------------------------------
 function SmartMB:FamiliarUpdate(fam)
-    -- check if Config is initialized (safety check)
-    if not SmartMB.Config or not SmartMB.Config.enabled then return end
+    -- Check if this familiar should be controlled
+    if not shouldControlFamiliar(fam) then return end
 
     -- reassign targets only when entity change is detected
     if needsTargetReassignment then
@@ -323,12 +372,10 @@ function SmartMB:OnNewRoom()
 end
 
 --------------------------------------------------
--- Register familiar callbacks
+-- Register familiar callbacks (for ALL familiars, filtering done in callback)
 --------------------------------------------------
-for _, variant in ipairs(CONTROLLED_VARIANTS) do
-    SmartMB:AddCallback(ModCallbacks.MC_FAMILIAR_INIT,   SmartMB.FamiliarInit,   variant)
-    SmartMB:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, SmartMB.FamiliarUpdate, variant)
-end
+SmartMB:AddCallback(ModCallbacks.MC_FAMILIAR_INIT,   SmartMB.FamiliarInit)
+SmartMB:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, SmartMB.FamiliarUpdate)
 
 --------------------------------------------------
 -- register entity change detection callbacks

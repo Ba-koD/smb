@@ -58,6 +58,158 @@ function SMB_MCM.Setup(mod)
         Info = {"Reset the settings to their default values."},
     })
 
+    -- Familiars Settings
+    ModConfigMenu.AddSpace(category, "Familiars")
+    ModConfigMenu.AddText(category, "Familiars", "--- Familiar Targeting ---")
+
+    -- ALL Familiars (master toggle)
+    ModConfigMenu.AddSetting(category, "Familiars", {
+        Type = ModConfigMenu.OptionType.BOOLEAN,
+        CurrentSetting = function() return mod.Config.famAll end,
+        Display = function() return "All Familiars: " .. (mod.Config.famAll and "ON" or "OFF") end,
+        OnChange = function(b) mod.Config.famAll = b end,
+        Info = {"Enable smart targeting for ALL familiars.", "Overrides individual settings below."},
+    })
+
+    ModConfigMenu.AddSpace(category, "Familiars")
+
+    -- Cube of Meat (Lv3 & Lv4)
+    ModConfigMenu.AddSetting(category, "Familiars", {
+        Type = ModConfigMenu.OptionType.BOOLEAN,
+        CurrentSetting = function() return mod.Config.famMeatboy end,
+        Display = function() return "Meatboy: " .. (mod.Config.famMeatboy and "ON" or "OFF") end,
+        OnChange = function(b) mod.Config.famMeatboy = b end,
+        Info = {"Enable smart targeting for Cube of Meat (Lv3 & Lv4)."},
+    })
+
+    -- Ball of Bandages (Lv3 & Lv4)
+    ModConfigMenu.AddSetting(category, "Familiars", {
+        Type = ModConfigMenu.OptionType.BOOLEAN,
+        CurrentSetting = function() return mod.Config.famBandage end,
+        Display = function() return "Bandage: " .. (mod.Config.famBandage and "ON" or "OFF") end,
+        OnChange = function(b) mod.Config.famBandage = b end,
+        Info = {"Enable smart targeting for Ball of Bandages (Lv3 & Lv4)."},
+    })
+
+    ModConfigMenu.AddSpace(category, "Familiars")
+
+    -- 14: DEAD_BIRD
+    ModConfigMenu.AddSetting(category, "Familiars", {
+        Type = ModConfigMenu.OptionType.BOOLEAN,
+        CurrentSetting = function() return mod.Config.famDeadBird end,
+        Display = function() return "Dead Bird: " .. (mod.Config.famDeadBird and "ON" or "OFF") end,
+        OnChange = function(b) mod.Config.famDeadBird = b end,
+        Info = {"Enable smart targeting for Dead Bird."},
+    })
+
+    -- 15: EVES_BIRD_FOOT
+    ModConfigMenu.AddSetting(category, "Familiars", {
+        Type = ModConfigMenu.OptionType.BOOLEAN,
+        CurrentSetting = function() return mod.Config.famEvesBirdFoot end,
+        Display = function() return "Eve's Bird Foot: " .. (mod.Config.famEvesBirdFoot and "ON" or "OFF") end,
+        OnChange = function(b) mod.Config.famEvesBirdFoot = b end,
+        Info = {"Enable smart targeting for Eve's Bird Foot."},
+    })
+
+    -- 48: ISAACS_BODY
+    ModConfigMenu.AddSetting(category, "Familiars", {
+        Type = ModConfigMenu.OptionType.BOOLEAN,
+        CurrentSetting = function() return mod.Config.famIsaacsBody end,
+        Display = function() return "Isaac's Body: " .. (mod.Config.famIsaacsBody and "ON" or "OFF") end,
+        OnChange = function(b) mod.Config.famIsaacsBody = b end,
+        Info = {"Enable smart targeting for Isaac's Body."},
+    })
+
+    -- 50: SMART_FLY
+    ModConfigMenu.AddSetting(category, "Familiars", {
+        Type = ModConfigMenu.OptionType.BOOLEAN,
+        CurrentSetting = function() return mod.Config.famSmartFly end,
+        Display = function() return "Smart Fly: " .. (mod.Config.famSmartFly and "ON" or "OFF") end,
+        OnChange = function(b) mod.Config.famSmartFly = b end,
+        Info = {"Enable smart targeting for Smart Fly."},
+    })
+
+    -- 56: LEECH
+    ModConfigMenu.AddSetting(category, "Familiars", {
+        Type = ModConfigMenu.OptionType.BOOLEAN,
+        CurrentSetting = function() return mod.Config.famLeech end,
+        Display = function() return "Leech: " .. (mod.Config.famLeech and "ON" or "OFF") end,
+        OnChange = function(b) mod.Config.famLeech = b end,
+        Info = {"Enable smart targeting for Leech."},
+    })
+
+    -- 63: LIL_HAUNT
+    ModConfigMenu.AddSetting(category, "Familiars", {
+        Type = ModConfigMenu.OptionType.BOOLEAN,
+        CurrentSetting = function() return mod.Config.famLilHaunt end,
+        Display = function() return "Lil Haunt: " .. (mod.Config.famLilHaunt and "ON" or "OFF") end,
+        OnChange = function(b) mod.Config.famLilHaunt = b end,
+        Info = {"Enable smart targeting for Lil Haunt."},
+    })
+
+    -- 79: GEMINI
+    ModConfigMenu.AddSetting(category, "Familiars", {
+        Type = ModConfigMenu.OptionType.BOOLEAN,
+        CurrentSetting = function() return mod.Config.famGemini end,
+        Display = function() return "Gemini: " .. (mod.Config.famGemini and "ON" or "OFF") end,
+        OnChange = function(b) mod.Config.famGemini = b end,
+        Info = {"Enable smart targeting for Gemini."},
+    })
+
+    -- 118: ANGRY_FLY
+    ModConfigMenu.AddSetting(category, "Familiars", {
+        Type = ModConfigMenu.OptionType.BOOLEAN,
+        CurrentSetting = function() return mod.Config.famAngryFly end,
+        Display = function() return "Angry Fly: " .. (mod.Config.famAngryFly and "ON" or "OFF") end,
+        OnChange = function(b) mod.Config.famAngryFly = b end,
+        Info = {"Enable smart targeting for Angry Fly."},
+    })
+
+    -- 210: BIRD_CAGE
+    ModConfigMenu.AddSetting(category, "Familiars", {
+        Type = ModConfigMenu.OptionType.BOOLEAN,
+        CurrentSetting = function() return mod.Config.famBirdCage end,
+        Display = function() return "Bird Cage: " .. (mod.Config.famBirdCage and "ON" or "OFF") end,
+        OnChange = function(b) mod.Config.famBirdCage = b end,
+        Info = {"Enable smart targeting for Bird Cage."},
+    })
+
+    -- 218: BOT_FLY
+    ModConfigMenu.AddSetting(category, "Familiars", {
+        Type = ModConfigMenu.OptionType.BOOLEAN,
+        CurrentSetting = function() return mod.Config.famBotFly end,
+        Display = function() return "Bot Fly: " .. (mod.Config.famBotFly and "ON" or "OFF") end,
+        OnChange = function(b) mod.Config.famBotFly = b end,
+        Info = {"Enable smart targeting for Bot Fly."},
+    })
+
+    -- 224: BABY_PLUM
+    ModConfigMenu.AddSetting(category, "Familiars", {
+        Type = ModConfigMenu.OptionType.BOOLEAN,
+        CurrentSetting = function() return mod.Config.famBabyPlum end,
+        Display = function() return "Baby Plum: " .. (mod.Config.famBabyPlum and "ON" or "OFF") end,
+        OnChange = function(b) mod.Config.famBabyPlum = b end,
+        Info = {"Enable smart targeting for Baby Plum."},
+    })
+
+    -- 228: MINISAAC
+    ModConfigMenu.AddSetting(category, "Familiars", {
+        Type = ModConfigMenu.OptionType.BOOLEAN,
+        CurrentSetting = function() return mod.Config.famMinisaac end,
+        Display = function() return "Minisaac: " .. (mod.Config.famMinisaac and "ON" or "OFF") end,
+        OnChange = function(b) mod.Config.famMinisaac = b end,
+        Info = {"Enable smart targeting for Minisaac."},
+    })
+
+    -- 241: BLOOD_PUPPY
+    ModConfigMenu.AddSetting(category, "Familiars", {
+        Type = ModConfigMenu.OptionType.BOOLEAN,
+        CurrentSetting = function() return mod.Config.famBloodPuppy end,
+        Display = function() return "Blood Puppy: " .. (mod.Config.famBloodPuppy and "ON" or "OFF") end,
+        OnChange = function(b) mod.Config.famBloodPuppy = b end,
+        Info = {"Enable smart targeting for Blood Puppy."},
+    })
+
     -- Debug Settings
     ModConfigMenu.AddSpace(category, "Debug")
     ModConfigMenu.AddText(category, "Debug", "--- Debug Settings ---")

@@ -5,7 +5,7 @@ local SMB_Config = {}
 -- 2. Update VERSION below to match
 -- 3. Keep both files at the same version!
 
-local VERSION = "1.1"
+local VERSION = "2.0"
 
 SMB_Config.VERSION = VERSION
 
@@ -14,6 +14,24 @@ local DefaultConfig = {
     enabled = true,
     detectionRadius = 10,
     flightAssist = true,
+    -- Familiar enable settings
+    famAll = false,      -- ALL Familiars (overrides individual settings)
+    famMeatboy = true,   -- Cube of Meat (Lv3 & Lv4)
+    famBandage = true,   -- Ball of Bandages (Lv3 & Lv4)
+    -- Additional Familiars (MCM categories)
+    famDeadBird = false,      -- 14: DEAD_BIRD
+    famEvesBirdFoot = false,  -- 15: EVES_BIRD_FOOT
+    famIsaacsBody = false,    -- 48: ISAACS_BODY
+    famSmartFly = false,      -- 50: SMART_FLY
+    famLeech = false,         -- 56: LEECH
+    famLilHaunt = false,      -- 63: LIL_HAUNT
+    famGemini = false,        -- 79: GEMINI
+    famAngryFly = false,      -- 118: ANGRY_FLY
+    famBirdCage = false,      -- 210: BIRD_CAGE
+    famBotFly = false,        -- 218: BOT_FLY
+    famBabyPlum = false,      -- 224: BABY_PLUM
+    famMinisaac = false,      -- 228: MINISAAC
+    famBloodPuppy = false,    -- 241: BLOOD_PUPPY
     -- debug
     showScreenDebug = false,
     showSMBDebugInfo = true,
