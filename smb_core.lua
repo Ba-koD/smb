@@ -3,7 +3,7 @@
 local SMB_Config = include("smb_config")
 local SMB_MCM   = include("smb_mcm")
 
-SmartMB = SmartMB or RegisterMod("Smart Meat & Bandage", 1)
+SmartMB = SmartMB or RegisterMod("Smart Meat & Bandage +", 1)
 SMB_Config.Init(SmartMB) -- Initialize with default config immediately to prevent nil errors.
 local game = Game()
 
