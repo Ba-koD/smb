@@ -2,6 +2,7 @@
 require("smb_config")
 require("smb_mcm")
 require("smb_core")
+require("smb_flyform")
 require("smb_render")
 
 -----------------------------------------------------------

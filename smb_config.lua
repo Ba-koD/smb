@@ -5,7 +5,7 @@ local SMB_Config = {}
 -- 2. Update VERSION below to match
 -- 3. Keep both files at the same version!
 
-local VERSION = "2.0"
+local VERSION = "2.1"
 
 SMB_Config.VERSION = VERSION
 
@@ -14,6 +14,7 @@ local DefaultConfig = {
     enabled = true,
     detectionRadius = 10,
     flightAssist = true,
+    flightHeadOnly = true,
     -- Familiar enable settings
     famAll = false,      -- ALL Familiars (overrides individual settings)
     famMeatboy = true,   -- Cube of Meat (Lv3 & Lv4)

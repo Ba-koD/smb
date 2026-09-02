@@ -43,6 +43,15 @@ function SMB_MCM.Setup(mod)
         Info = {"Enable or disable the flight assist for the Smart Meat Bandage mod."},
     })
 
+    -- Flying Head Form toggle
+    ModConfigMenu.AddSetting(category, "General", {
+        Type = ModConfigMenu.OptionType.BOOLEAN,
+        CurrentSetting = function() return mod.Config.flightHeadOnly end,
+        Display = function() return "Flying Head Form: " .. (mod.Config.flightHeadOnly and "ON" or "OFF") end,
+        OnChange = function(b) mod.Config.flightHeadOnly = b end,
+        Info = {"While the owner can fly, Meatboy / Bandage (Lv3 & Lv4)", "hide their walking body and only the head floats."},
+    })
+
     -- Reset Button
     ModConfigMenu.AddSpace(category, "General")
     ModConfigMenu.AddSetting(category, "General", {
